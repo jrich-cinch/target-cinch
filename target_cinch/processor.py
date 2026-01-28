@@ -125,6 +125,17 @@ class Processor:
             for dependency in DEPENDENCIES[model]:
                 self.post_batch(dependency)
 
+        # Sort batches to ensure consistent lock ordering and prevent deadlocks
+        # when multiple threads/workers process concurrent requests
+        if self.config.get("sort_batches", False) and model in ["vehicle", "customer_ref", "real_estate", "transaction"]:
+            self.batch_queues[model].sort(
+                key=lambda r: (
+                    str(r.get("company_id", "")),
+                    str(r.get("entity_source", "")),
+                    str(r.get("entity_ref", "")),
+                )
+            )
+
         # Update integration log info
         self.post_log(model)
 
