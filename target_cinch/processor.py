@@ -10,6 +10,9 @@ BATCH_SIZE = 500
 DEPENDENCIES = {
     "schedule": [
         "customer_ref",
+        "subscription",
+        "vehicle",
+        "real_estate",
     ],
     "transaction": [
         "customer_ref",
